@@ -21,7 +21,9 @@ processDir root document = do
     docExist <- doesFileExist document
     if exist && docExist then
         do
-            let docDir = takeDirectory document
+            let fullDocDir = takeDirectory document
+            let docDir = replace root "" fullDocDir
+
             fullPaths <- readProcess "mdfind" ["-onlyin", root, "-name", ".dll"] ""
             let notEmpty = split "\n" fullPaths |> filter ((/=) "")
             let rootPaths = notEmpty |> map (clearRoot root)
