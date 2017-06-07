@@ -12,6 +12,7 @@ clearRoot :: String -> String -> String
 clearRoot root path =
     replace root "" path
 
+(|>) :: t -> (t -> t) -> t
 (|>) x y = y x
 
 processDir :: String -> String -> IO([String])
@@ -23,7 +24,7 @@ processDir root document = do
             let docDir = takeDirectory document
             fullPaths <- readProcess "mdfind" ["-onlyin", root, "-name", ".dll"] ""
             let rootPaths = map (clearRoot root) $ split "\n" fullPaths |> filter ((/=) "")
-            let slashs = length $ filter ((==) '/') docDir
+            let slashs = length $ filter ((==) '/') docDir 
             let leader = if slashs > 0 then
                             intercalate "" $ replicate slashs "../"
                         else
@@ -31,7 +32,8 @@ processDir root document = do
                                 "./"
                             else 
                                 "../"
-            let append x = replace "//" "/" $ leader ++ x
+            -- let append x = replace "//" "/" $ leader ++ x
+            let append x = leader ++ x |> replace "//" "/"
             return $ map append rootPaths
     else
         return []
