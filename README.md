@@ -1,1 +1,5 @@
-## H-Reference 
+## H-Reference
+
+```
+stack build --copy-bins
+```
